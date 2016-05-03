@@ -11,8 +11,8 @@ configure :production do
   app_logger = Logger.new(STDOUT)
   set :logging, Logger::DEBUG
   use Rack::CommonLogger, app_logger
-  set :dump_errors, false
-  set :raise_errors, false
+  set :dump_errors, true
+  set :raise_errors, true
 end
 
 configure :development do
