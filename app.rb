@@ -27,10 +27,10 @@ configure :test do
   use Rack::CommonLogger, app_logger
 end
 
-# use Rack::Auth::Basic, "Restricted Area" do |username, password|
-#   puts "i am authorizing"
-#   username == ENV['APP_USERNAME'] and password == ENV['APP_PASSWORD']
-# end
+use Rack::Auth::Basic, "Restricted Area" do |username, password|
+  puts "i am authorizing"
+  username == 'matt' and password == 'matt'
+end
 
 #################
 # helper methods
