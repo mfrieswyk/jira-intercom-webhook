@@ -9,7 +9,7 @@ JIRA_HOSTNAME = ENV['JIRA_HOSTNAME']
 
 configure :production do
   app_logger = Logger.new(STDOUT)
-  set :logging, Logger::WARN
+  set :logging, Logger::DEBUG
   use Rack::CommonLogger, app_logger
   set :dump_errors, false
   set :raise_errors, false
