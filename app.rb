@@ -29,7 +29,7 @@ end
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
   puts "i am authorizing"
-  username == 'matt' and password == 'matt'
+  username == ENV['APP_USERNAME'] and password == ENV['APP_PASSWORD']
 end
 
 #################
