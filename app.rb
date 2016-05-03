@@ -27,10 +27,10 @@ configure :test do
   use Rack::CommonLogger, app_logger
 end
 
-use Rack::Auth::Basic, "Restricted Area" do |username, password|
-  puts "i am authorizing"
-  username == ENV['APP_USERNAME'] and password == ENV['APP_PASSWORD']
-end
+# use Rack::Auth::Basic, "Restricted Area" do |username, password|
+#   puts "i am authorizing"
+#   username == ENV['APP_USERNAME'] and password == ENV['APP_PASSWORD']
+# end
 
 #################
 # helper methods
@@ -52,8 +52,6 @@ end
 
 
 post '/jira_to_intercom' do
-  puts "here"
-  logger.debug "In Jara to intercom def"
   content_type :json
 
   request.body.rewind
