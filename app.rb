@@ -28,6 +28,8 @@ configure :test do
 end
 
 use Rack::Auth::Basic, "Restricted Area" do |username, password|
+  puts "i am authorizing"
+  logger.debug("i am authorizing debug logger")
   username == ENV['APP_USERNAME'] and password == ENV['APP_PASSWORD']
 end
 
