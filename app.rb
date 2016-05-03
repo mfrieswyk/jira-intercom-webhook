@@ -50,6 +50,7 @@ get '/health' do
 end
 
 post '/jira_to_intercom' do
+  puts "here"
   logger.debug "In Jara to intercom def"
   content_type :json
 
