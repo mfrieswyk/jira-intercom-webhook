@@ -39,4 +39,17 @@ class IntercomApiClient
     self.class.post("/conversations/#{id}/reply", params)
   end
 
+  # open an existing conversation
+  #
+  def open_conversation id
+    params = default_params.merge({
+      body: {
+        type: 'admin',
+        message_type: 'note',
+        # id of admin user to attribute note to
+        admin_id: ENV['INTERCOM_ADMIN_ID']
+      }.to_json
+    })
+    self.class.post("/conversations/#{id}/reply", params)
+  end
 end

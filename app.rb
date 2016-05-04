@@ -90,22 +90,17 @@ post '/jira_to_intercom' do
       convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
 
       # check if convo already linked
-      # if convo_response.code == 200
-      #   issue_regex = jira_issue_regex(issue_key)
-      #   convo_bodies = convo_response['conversation_parts']['conversation_parts'].map {|p| p['body'] }.compact.join
-      #   # already linked, quit here
-      #   if issue_regex.match(convo_bodies)
-      #     logger.info("Issue #{issue_key} already linked in Intercom")
-      #     halt 409
-      #   end
-      # end
-
-      # not linked, let's add a link
+      if convo_response.code == 200
+        open_convo = INTERCOM_CLIENT.open_conversation(convo_id)
+        open_convo.to_json
+      end
+      
+      # Add link to convo
       logger.info("Linking issue #{issue_key} in Intercom...")
-      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} #{issue_key}: #{issue_title} </a> Status: #{issue_status}")
-
+      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
       result.to_json
     end
+
   else
     logger.info("Unsupported JIRA webhook event")
     halt 400
