@@ -82,25 +82,28 @@ post '/jira_to_intercom' do
       # get issue info
       issue_title = json['issue']['fields']['summary']
       issue_key = json['issue']['key']
+      issue_status = json['issue']['fields']['status']['name']
+      issue_icon = json['issue']['fields']['issuetype']['iconUrl']
+      issue_type = json['issue']['fields']['issuetype']['name']
       issue_url = jira_issue_url(issue_key)
 
       # get convo
       convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
 
       # check if convo already linked
-      if convo_response.code == 200
-        issue_regex = jira_issue_regex(issue_key)
-        convo_bodies = convo_response['conversation_parts']['conversation_parts'].map {|p| p['body'] }.compact.join
-        # already linked, quit here
-        if issue_regex.match(convo_bodies)
-          logger.info("Issue #{issue_key} already linked in Intercom")
-          halt 409
-        end
-      end
+      # if convo_response.code == 200
+      #   issue_regex = jira_issue_regex(issue_key)
+      #   convo_bodies = convo_response['conversation_parts']['conversation_parts'].map {|p| p['body'] }.compact.join
+      #   # already linked, quit here
+      #   if issue_regex.match(convo_bodies)
+      #     logger.info("Issue #{issue_key} already linked in Intercom")
+      #     halt 409
+      #   end
+      # end
 
       # not linked, let's add a link
       logger.info("Linking issue #{issue_key} in Intercom...")
-      result = INTERCOM_CLIENT.note_conversation(convo_id, "JIRA ticket: <a href='#{issue_url}' target='_blank'>#{issue_title} (#{issue_key})</a>")
+      result = INTERCOM_CLIENT.note_conversation(convo_id, "JIRA ticket: <a href='#{issue_url}' target='_blank'>#{issue_icon}#{issue_type} #{issue_key}: #{issue_title} </a> Status:#{issue_status}")
 
       result.to_json
     end
