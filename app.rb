@@ -83,7 +83,6 @@ post '/jira_to_intercom' do
       issue_title = json['issue']['fields']['summary']
       issue_key = json['issue']['key']
       issue_status = json['issue']['fields']['status']['name']
-      issue_icon = json['issue']['fields']['issuetype']['iconUrl']
       issue_type = json['issue']['fields']['issuetype']['name']
       issue_url = jira_issue_url(issue_key)
 
@@ -103,7 +102,7 @@ post '/jira_to_intercom' do
 
       # not linked, let's add a link
       logger.info("Linking issue #{issue_key} in Intercom...")
-      result = INTERCOM_CLIENT.note_conversation(convo_id, "JIRA ticket: <a href='#{issue_url}' target='_blank'>#{issue_icon}#{issue_type} #{issue_key}: #{issue_title} </a> Status:#{issue_status}")
+      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} #{issue_key}: #{issue_title} </a> Status: #{issue_status}")
 
       result.to_json
     end
