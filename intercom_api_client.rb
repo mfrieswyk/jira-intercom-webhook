@@ -45,7 +45,7 @@ class IntercomApiClient
     params = default_params.merge({
       body: {
         type: 'admin',
-        message_type: 'note',
+        message_type: 'open',
         # id of admin user to attribute note to
         admin_id: ENV['INTERCOM_ADMIN_ID']
       }.to_json
