@@ -76,33 +76,33 @@ post '/jira_to_intercom' do
     match_data = description.scan(INTERCOM_REGEX)
     logger.info(match_data.inspect)
     # check if description includes intercom conversation URL
-    if match_data && match_data[:app_id] && match_data[:conversation_id]
-      convo_id = match_data[:conversation_id]
+    match_data.each do |:app_id, :conversation_id|
+      if match_data && match_data[:app_id] && match_data[:conversation_id]
+        convo_id = match_data[:conversation_id]
 
-      # get issue info
-      issue_title = json['issue']['fields']['summary']
-      issue_key = json['issue']['key']
-      issue_status = json['issue']['fields']['status']['name']
-      issue_type = json['issue']['fields']['issuetype']['name']
-      issue_url = jira_issue_url(issue_key)
+        # get issue info
+        issue_title = json['issue']['fields']['summary']
+        issue_key = json['issue']['key']
+        issue_status = json['issue']['fields']['status']['name']
+        issue_type = json['issue']['fields']['issuetype']['name']
+        issue_url = jira_issue_url(issue_key)
 
-      # get convo
-      convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
+        # get convo
+        convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
 
-      # check if convo already linked
-      if convo_response.code == 200
-        open_convo = INTERCOM_CLIENT.open_conversation(convo_id)
-        open_convo.to_json
+        # check if convo already linked
+        if convo_response.code == 200
+          open_convo = INTERCOM_CLIENT.open_conversation(convo_id)
+          open_convo.to_json
+        end
+
+        # Add link to convo
+        logger.info("Linking issue #{issue_key} in Intercom...")
+        result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
+        result.to_json
       end
-
-      # Add link to convo
-      logger.info("Linking issue #{issue_key} in Intercom...")
-      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
-      result.to_json
-    end
-
-  else
-    logger.info("Unsupported JIRA webhook event")
-    halt 400
-  end
+      else
+        logger.info("Unsupported JIRA webhook event")
+        halt 400
+      end
 end
