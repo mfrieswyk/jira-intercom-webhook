@@ -74,7 +74,7 @@ post '/jira_to_intercom' do
   if ['jira:issue_created', 'jira:issue_updated'].include?(json['webhookEvent'])
     description = json['issue']['fields']['description']
     match_data = INTERCOM_REGEX.match(description)
-
+    logger.info(match_data.inspect)
     # check if description includes intercom conversation URL
     if match_data && match_data[:app_id] && match_data[:conversation_id]
       convo_id = match_data[:conversation_id]
@@ -97,7 +97,7 @@ post '/jira_to_intercom' do
 
       # Add link to convo
       logger.info("Linking issue #{issue_key} in Intercom...")
-      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> **Status:** #{issue_status}")
+      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
       result.to_json
     end
 
