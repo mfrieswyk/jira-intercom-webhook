@@ -97,7 +97,7 @@ post '/jira_to_intercom' do
         end
 
         # Add link to convo
-        logger.info("Linking issue #{issue_key} in Intercom...")
+        logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
         result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
         result.to_json
       end
