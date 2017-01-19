@@ -75,7 +75,11 @@ post '/jira_to_intercom' do
     description = json['issue']['fields']['description']
     match_data = description.scan(INTERCOM_REGEX)
     # check if description includes intercom conversation URL
-    match_data.each { |md| logger.info(match_data[md][1])}
+    match_data.each do |md|
+      md.each do |data|
+        logger.info(data)
+      end
+    end
     # if match_data && match_data[:app_id] && match_data[:conversation_id]
       convo_id = match_data[:conversation_id]
 
