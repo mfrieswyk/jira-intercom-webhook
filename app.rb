@@ -100,8 +100,8 @@ post '/jira_to_intercom' do
       result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
       result.to_json
     end
-    else
-      logger.info("Unsupported JIRA webhook event")
-      halt 400
-    end
+    # else
+    #  logger.info("Unsupported JIRA webhook event")
+    #  halt 400
+    # end
 end
