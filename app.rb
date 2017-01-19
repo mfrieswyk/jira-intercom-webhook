@@ -98,14 +98,9 @@ post '/jira_to_intercom' do
 
         # Add link to convo
         logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
-        result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> Status: #{issue_status}")
+        result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> <b>Status:</b> #{issue_status}")
         result.to_json
       end
     end
-    # if match_data && match_data[:app_id] && match_data[:conversation_id]
-
-    # else
-    #  logger.info("Unsupported JIRA webhook event")
-    #  halt 400
   end
 end
