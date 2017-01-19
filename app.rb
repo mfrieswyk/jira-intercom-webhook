@@ -107,5 +107,5 @@ post '/jira_to_intercom' do
     # else
     #  logger.info("Unsupported JIRA webhook event")
     #  halt 400
-  end
+    # end
 end
