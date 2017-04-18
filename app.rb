@@ -86,7 +86,7 @@ post '/jira_to_intercom' do
         issue_status = json['issue']['fields']['status']['name']
         issue_type = json['issue']['fields']['issuetype']['name']
         issue_url = jira_issue_url(issue_key)
-        assignee = json['issue']['fields']['assignee'] ? json['issue']['fields']['assignee'] : "Unassigned"
+        assignee = json['issue']['fields']['assignee'] ? json['issue']['fields']['assignee']['name'] : "Unassigned"
 
         # get convo
         convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
