@@ -86,6 +86,7 @@ post '/jira_to_intercom' do
         issue_status = json['issue']['fields']['status']['name']
         issue_type = json['issue']['fields']['issuetype']['name']
         issue_url = jira_issue_url(issue_key)
+        assignee = json['issue']['fields']['assignee']
 
         # get convo
         convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
@@ -98,7 +99,7 @@ post '/jira_to_intercom' do
 
         # Add link to convo
         logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
-        result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> <b>Status:</b> #{issue_status}")
+        result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a> <b>Status:</b> #{issue_status} <b>Assigned to:</b> #{assignee}")
         result.to_json
       end
     end
