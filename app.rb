@@ -103,7 +103,7 @@ post '/jira_to_intercom' do
       logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
       result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
       result.to_json
-      $i =+ 1
+      $i += 1
     end
   end
 end
