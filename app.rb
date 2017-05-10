@@ -85,13 +85,10 @@ post '/jira_to_intercom' do
     while $i < $num do
       convo_id = match_data[$i][1]
 
-      # get convo
-      conversation = INTERCOM_CLIENT.conversations.find(id: convo_id)
-
       #open conversation and add note
       logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
-      conversation.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
-      conversation.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
+      INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
+      INTERCOM_CLIENT.conversations.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
 
       #increment loop
       $i += 1
