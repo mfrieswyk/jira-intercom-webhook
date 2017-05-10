@@ -72,36 +72,38 @@ post '/jira_to_intercom' do
   end
 
   if ['jira:issue_created', 'jira:issue_updated'].include?(json['webhookEvent'])
+
+    # get issue info
+    issue_title = json['issue']['fields']['summary']
+    issue_key = json['issue']['key']
+    issue_status = json['issue']['fields']['status']['name']
+    issue_type = json['issue']['fields']['issuetype']['name']
+    issue_url = jira_issue_url(issue_key)
+    assignee = json['issue']['fields']['assignee'] ? json['issue']['fields']['assignee']['name'] : "Unassigned"
     description = json['issue']['fields']['description']
     match_data = description.scan(INTERCOM_REGEX)
-    logger.info(match_data.length)
+
     # iterate through description and send note to intercom conversation
-    match_data.each do |data1|
-      data1.each do |data2|
-        convo_id = data2
+    $i = 0
+    $num = match_data.length
 
-        # get issue info
-        issue_title = json['issue']['fields']['summary']
-        issue_key = json['issue']['key']
-        issue_status = json['issue']['fields']['status']['name']
-        issue_type = json['issue']['fields']['issuetype']['name']
-        issue_url = jira_issue_url(issue_key)
-        assignee = json['issue']['fields']['assignee'] ? json['issue']['fields']['assignee']['name'] : "Unassigned"
+    while $i < $num do
+      convo_id = match_data[$i][1]
 
-        # get convo
-        convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
+      # get convo
+      convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
 
-        # check if convo already linked
-        if convo_response.code == 200
-          open_convo = INTERCOM_CLIENT.open_conversation(convo_id)
-          open_convo.to_json
-        end
-
-        # Add link to convo
-        logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
-        result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
-        result.to_json
+      # check if convo already linked
+      if convo_response.code == 200
+        open_convo = INTERCOM_CLIENT.open_conversation(convo_id)
+        open_convo.to_json
       end
+
+      # Add link to convo
+      logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
+      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
+      result.to_json
+      $i =+ 1
     end
   end
 end
