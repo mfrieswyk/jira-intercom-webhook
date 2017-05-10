@@ -1,10 +1,10 @@
 require 'bundler'
 Bundler.require
 require 'logger'
-require './intercom_api_client.rb'
+require 'intercom'
 
 INTERCOM_REGEX = /https:\/\/app.intercom.io\/a\/apps\/(?<app_id>\S*)\/inbox\/(\S*\/)?conversation(s)?\/(?<conversation_id>\d*)/
-INTERCOM_CLIENT = IntercomApiClient.new(ENV['INTERCOM_APP_ID'], ENV['INTERCOM_API_KEY'])
+INTERCOM_CLIENT = Intercom::Client.new(token: ENV['INTERCOM_API_KEY'])
 JIRA_HOSTNAME = ENV['JIRA_HOSTNAME']
 
 configure :production do
@@ -26,11 +26,6 @@ configure :test do
   set :logging, Logger::WARN
   use Rack::CommonLogger, app_logger
 end
-
-# use Rack::Auth::Basic, "Restricted Area" do |username, password|
-#   puts "i am authorizing"
-#   username == ENV['APP_USERNAME'] and password == ENV['APP_PASSWORD']
-# end
 
 #################
 # helper methods
@@ -91,18 +86,14 @@ post '/jira_to_intercom' do
       convo_id = match_data[$i][1]
 
       # get convo
-      convo_response = INTERCOM_CLIENT.get_conversation(convo_id)
+      conversation = INTERCOM_CLIENT.conversations.find(id: convo_id)
 
-      # check if convo already linked
-      if convo_response.code == 200
-        open_convo = INTERCOM_CLIENT.open_conversation(convo_id)
-        open_convo.to_json
-      end
-
-      # Add link to convo
+      #open conversation and add note
       logger.info("Linking issue #{issue_key} in Intercom... to Conversation #{convo_id}")
-      result = INTERCOM_CLIENT.note_conversation(convo_id, "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
-      result.to_json
+      conversation.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
+      conversation.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
+
+      #increment loop
       $i += 1
     end
   end
