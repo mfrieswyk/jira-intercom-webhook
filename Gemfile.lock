@@ -3,10 +3,11 @@ GEM
   specs:
     coderay (1.1.0)
     ffi (1.9.10)
-    ffi (1.9.10-x86-mingw32)
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
+    intercom (3.5.12)
+      json (>= 1.8)
     json (1.8.3)
     listen (3.0.5)
       rb-fsevent (>= 0.9.3)
@@ -39,6 +40,7 @@ PLATFORMS
 
 DEPENDENCIES
   httparty
+  intercom
   json
   pry
   rake
@@ -50,4 +52,4 @@ RUBY VERSION
    ruby 2.2.4p230
 
 BUNDLED WITH
-   1.12.2
+   1.14.6

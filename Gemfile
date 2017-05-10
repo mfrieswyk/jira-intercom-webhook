@@ -6,6 +6,7 @@ gem 'sinatra'
 gem 'json'
 gem 'httparty'
 gem 'redis'
+gem 'intercom'
 
 group :development do
   gem 'rerun'
