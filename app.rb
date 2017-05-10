@@ -74,7 +74,7 @@ post '/jira_to_intercom' do
   if ['jira:issue_created', 'jira:issue_updated'].include?(json['webhookEvent'])
     description = json['issue']['fields']['description']
     match_data = description.scan(INTERCOM_REGEX)
-    logger.info(match_data)
+    logger.info(match_data.length)
     # iterate through description and send note to intercom conversation
     match_data.each do |data1|
       data1.each do |data2|
