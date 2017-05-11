@@ -76,6 +76,7 @@ post '/jira_to_intercom' do
     issue_url = jira_issue_url(issue_key)
     assignee = json['issue']['fields']['assignee'] ? json['issue']['fields']['assignee']['name'] : "Unassigned"
     description = json['issue']['fields']['description']
+    comment = json['comment'] ? json['comment']['body'] : nil
     match_data = description.scan(INTERCOM_REGEX)
 
     # iterate through description and send note to intercom conversation
@@ -88,7 +89,7 @@ post '/jira_to_intercom' do
       #open conversation and add note
       logger.info("Linking Jira issue #{issue_key} to Intercom conversation #{convo_id}")
       INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
-      INTERCOM_CLIENT.conversations.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}")
+      INTERCOM_CLIENT.conversations.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}<br><b>Comment:</b> #{comment}")
 
       #increment loop
       $i += 1
