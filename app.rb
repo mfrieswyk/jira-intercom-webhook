@@ -89,8 +89,9 @@ post '/jira_to_intercom' do
       #open conversation and add note
       logger.info("Linking Jira issue #{issue_key} to Intercom conversation #{convo_id}")
       conversation = INTERCOM_CLIENT.conversations.find(:id => convo_id)
-      logger.info(conversation(:open))
-      if conversation[:open] = false
+      status = conversation.instance_variable_get(:@open)
+      logger.info(status)
+      if status = false
         INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
       end
       INTERCOM_CLIENT.conversations.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}#{comment ? "<br><b>Comment:</b> #{comment}" : "" }")
