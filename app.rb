@@ -89,7 +89,7 @@ post '/jira_to_intercom' do
       #open conversation and add note
       logger.info("Linking Jira issue #{issue_key} to Intercom conversation #{convo_id}")
       conversation = INTERCOM_CLIENT.conversations.find(:id => convo_id)
-      logger.info(conversation.to_json)
+      logger.info(conversation.to_hash.to_json)
       status = conversation.open
       logger.info(status)
       if status = false
