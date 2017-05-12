@@ -62,8 +62,8 @@ post '/jira_to_intercom' do
     logger.error('Unable to parse JSON.')
     logger.error(ex)
     halt 500
-  ensure
-    logger.debug(data)
+  # ensure
+  #   logger.debug(data)
   end
 
   if ['jira:issue_created', 'jira:issue_updated'].include?(json['webhookEvent'])
@@ -87,14 +87,14 @@ post '/jira_to_intercom' do
       convo_id = match_data[$i][1]
 
       #open conversation and add note
-      logger.info("Linking Jira issue #{issue_key} to Intercom conversation #{convo_id}")
       conversation = INTERCOM_CLIENT.conversations.find(:id => convo_id)
-      status = conversation.to_hash.to_json["open"]
+      status = conversation.to_hash.to_json['open']
 
-      logger.info(status)
       if status == "open"
+        logger.info("Opening Intercom conversation #{convo_id}")
         INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
       end
+      logger.info("Linking Jira issue #{issue_key} to Intercom conversation #{convo_id}")
       INTERCOM_CLIENT.conversations.reply(id: convo_id, type: 'admin', admin_id: ENV['INTERCOM_ADMIN_ID'], message_type: 'note', body: "<a href='#{issue_url}' target='_blank'>#{issue_type} [#{issue_key}] #{issue_title} </a><br><b>Status:</b> #{issue_status}<br><b>Assigned to:</b> #{assignee}#{comment ? "<br><b>Comment:</b> #{comment}" : "" }")
 
       #increment loop
