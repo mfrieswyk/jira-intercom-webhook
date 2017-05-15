@@ -3,9 +3,6 @@ GEM
   specs:
     coderay (1.1.0)
     ffi (1.9.10)
-    httparty (0.13.7)
-      json (~> 1.8)
-      multi_xml (>= 0.5.2)
     intercom (3.5.12)
       json (>= 1.8)
     json (1.8.3)
@@ -13,7 +10,6 @@ GEM
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
     method_source (0.8.2)
-    multi_xml (0.5.5)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -39,7 +35,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  httparty
   intercom
   json
   pry
