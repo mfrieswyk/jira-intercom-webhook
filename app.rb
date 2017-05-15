@@ -62,8 +62,8 @@ post '/jira_to_intercom' do
     logger.error('Unable to parse JSON.')
     logger.error(ex)
     halt 500
-  # ensure
-  #   logger.debug(data)
+  ensure
+    logger.debug(data)
   end
 
   if ['jira:issue_created', 'jira:issue_updated'].include?(json['webhookEvent'])
