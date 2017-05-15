@@ -66,8 +66,7 @@ post '/jira_to_intercom' do
   #   logger.debug(data)
   end
 
-  event = json['webhookEvent']
-  if event.include?('jira:issue_created') || event.include?('jira:issue_updated')
+  if ['jira:issue_created', 'jira:issue_updated'].include?('webhookEvent')
 
     # get issue info
     issue_title = json['issue']['fields']['summary']
