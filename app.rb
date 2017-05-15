@@ -62,8 +62,8 @@ post '/jira_to_intercom' do
     logger.error('Unable to parse JSON.')
     logger.error(ex)
     halt 500
-  ensure
-    logger.debug(data)
+  # ensure
+  #   logger.debug(data)
   end
 
   event = json['webhookEvent']
@@ -90,11 +90,8 @@ post '/jira_to_intercom' do
       #open conversation and add note
       conversation = INTERCOM_CLIENT.conversations.find(:id => convo_id)
       status = conversation.to_hash.to_json['open']
-      user = conversation.to_hash.to_json['user']
 
-      logger.info(user)
-      logger.info(status)
-      if status == "open"
+      if status !== "open"
         logger.info("Opening Intercom conversation #{convo_id}")
         INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
       end
