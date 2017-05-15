@@ -91,7 +91,7 @@ post '/jira_to_intercom' do
       conversation = INTERCOM_CLIENT.conversations.find(:id => convo_id)
       status = conversation.to_hash.to_json['open']
 
-      if status !== "open"
+      if status != "open"
         logger.info("Opening Intercom conversation #{convo_id}")
         INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
       end
