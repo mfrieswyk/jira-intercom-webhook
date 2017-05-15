@@ -89,7 +89,11 @@ post '/jira_to_intercom' do
       #open conversation and add note
       conversation = INTERCOM_CLIENT.conversations.find(:id => convo_id)
       status = conversation.to_hash.to_json['open']
-
+      user = conversation.to_hash.to_json['user']
+      user_int = user.to_i(16, 10)
+      logger.info(user)
+      logger.info(user_int)
+      logger.info(status)
       if status == "open"
         logger.info("Opening Intercom conversation #{convo_id}")
         INTERCOM_CLIENT.conversations.open(id: convo_id, admin_id: ENV['INTERCOM_ADMIN_ID'])
